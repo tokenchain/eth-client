@@ -20,6 +20,7 @@ import (
 	"context"
 	"math/big"
 
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
@@ -55,6 +56,12 @@ func (c *client) Close() {
 	c.rpc.Close()
 }
 
+// Retrieve list of APIs available on the server
+func (c *client) SupportedModules() (map[string]string, error) {
+	r, err := c.rpc.SupportedModules()
+	return r, err
+}
+
 // ----------------------------------------------------------------------------
 // eth
 
@@ -84,7 +91,6 @@ func (c *client) BlockNumber(ctx context.Context) (*big.Int, error) {
 func (c *client) AddPeer(ctx context.Context, nodeURL string) error {
 	var r bool
 	// TODO: Result needs to be verified
-	// The response data type are bytes, but we cannot parse...
 	err := c.rpc.CallContext(ctx, &r, "admin_addPeer", nodeURL)
 	if err != nil {
 		return err
@@ -115,6 +121,18 @@ func (c *client) NodeInfo(ctx context.Context) (*p2p.PeerInfo, error) {
 
 // ----------------------------------------------------------------------------
 // miner
+
+// SetMiningAccount sets etherbase
+func (c *client) SetMiningAccount(ctx context.Context, account string) error {
+	etherbase := common.HexToAddress(account)
+	var r bool
+	// TODO: Result needs to be verified
+	err := c.rpc.CallContext(ctx, &r, "miner_setEtherbase", etherbase)
+	if err != nil {
+		return err
+	}
+	return err
+}
 
 // StartMining starts mining operation.
 func (c *client) StartMining(ctx context.Context) error {

@@ -37,10 +37,12 @@ type Client interface {
 	AddPeer(ctx context.Context, nodeURL string) error
 	AdminPeers(ctx context.Context) ([]*p2p.PeerInfo, error)
 	NodeInfo(ctx context.Context) (*p2p.PeerInfo, error)
+	SupportedModules() (map[string]string, error)
 
 	// miner
 	StartMining(ctx context.Context) error
 	StopMining(ctx context.Context) error
+	SetMiningAccount(ctx context.Context, account string) error
 
 	// eth client
 	BlockByHash(ctx context.Context, hash common.Hash) (*types.Block, error)
