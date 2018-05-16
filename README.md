@@ -19,16 +19,26 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/getamis/eth-client/client"
+	"github.com/getamis/eth-client/eth"
 )
 
 func main() {
+	// Note that by default, HTTP does not support the mining API
+	// If mining is not enabled on the node's HTTP endpoint, replace
+	// with local IPC socket filename
 	url := "http://127.0.0.1:8545"
-	client, err := client.Dial(url)
+	client, err := eth.Dial(url)
 	if err != nil {
 		fmt.Println("Failed to dial, url: ", url, ", err: ", err)
 		return
 	}
+
+        err = client.SetMiningAccount(context.Background(),
+		"de155b6f2aead0474c7428424dec755170e97f76")
+        if err != nil {
+                fmt.Println("Failed to set etherbase, err: ", err)
+                return
+        }
 
 	err = client.StartMining(context.Background())
 	if err != nil {
@@ -65,9 +75,11 @@ Implemented JSON-RPC methods
 * eth_gasPrice
 * eth_estimateGas
 * eth_sendRawTransaction
+* miner_setEtherbase
 * miner_startMining
 * miner_stopMining
 * net_version
+* supportedModules
 * logs
 * newHeads
 * eth_getLogs
