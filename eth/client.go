@@ -36,11 +36,11 @@ type client struct {
 
 // Dial connects a client to the given URL.
 func Dial(rawurl string) (Client, error) {
-	c, err := ethrpc.Dial(rawurl)
+	rpc, err := ethrpc.Dial(rawurl)
 	if err != nil {
 		return nil, err
 	}
-	return NewClient(c), nil
+	return NewClient(rpc), nil
 }
 
 // NewClient creates a client that uses the given RPC client.
