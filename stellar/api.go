@@ -15,8 +15,8 @@ type Client interface {
 
 	// stellar-core
 	Info(ctx context.Context) (resp *proto.InfoResponse, err error)
-	SubmitTransaction(ctx context.Context, envelope string) (resp *proto.TXResponse, err error)
 
 	// horizon
-	// ...
+	SubmitTransaction(ctx context.Context, envelope string) (resp *proto.TXResponse, err error) // simple wrapper to existing SubmitTransaction
+	BuildAndSendTransaction(ctx context.Context, from, to, amount string) (resp *proto.TXResponse, err error) // build, sign, and submit
 }

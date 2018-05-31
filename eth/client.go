@@ -25,6 +25,7 @@ import (
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/p2p"
+	"github.com/ethereum/go-ethereum/crypto"
 	ethrpc "github.com/ethereum/go-ethereum/rpc"
 )
 
@@ -83,6 +84,39 @@ func (c *client) BlockNumber(ctx context.Context) (*big.Int, error) {
 	h, err := hexutil.DecodeBig(r)
 	return h, err
 }
+
+func (c *client) BuildAndSendTransaction(ctx context.Context, from, to, amount string, nonce int64, gasLimit, gasPrice string, data []byte) error {
+	toAddress := common.HexToAddress(to)
+	privkey, err := crypto.HexToECDSA(from)
+	if err != nil {
+		return err
+	}
+
+	amountInt, err := hexutil.DecodeBig(amount)
+	if err != nil {
+		return err
+	}
+
+	gasLimitInt, err := hexutil.DecodeBig(gasLimit)
+	if err != nil {
+		return err
+	}
+
+	gasPriceInt, err := hexutil.DecodeBig(gasPrice)
+	if err != nil {
+		return err
+	}
+
+	tx := types.NewTransaction(uint64(nonce), toAddress, amountInt, gasLimitInt, gasPriceInt, data)
+
+	signTx, err := types.SignTx(tx, types.HomesteadSigner{}, privkey)
+	if err != nil {
+		return err
+	}
+
+	return c.SendTransaction(ctx, signTx)
+}
+
 
 // ----------------------------------------------------------------------------
 // admin
