@@ -1,14 +1,15 @@
-eth-client
-==========
+node-client-sdk
+===============
 
 [![Travis](https://img.shields.io/travis/rust-lang/rust.svg)](https://travis-ci.org/getamis/eth-client)
 [![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
 [![Go Report Card](https://goreportcard.com/badge/github.com/getamis/eth-client)](https://goreportcard.com/report/github.com/getamis/eth-client)
 
-A Golang client library to communicate with Ethereum RPC server.
+A Golang client library to communicate with Ethereum and Stellar RPC servers.
 * Implements most of JSON-RPC methods and several client-specific methods.
-* Provides a high-level interface to **propose/get validators** on Istanbul blockchain.
-* Provides a high-level interface to **create private contracts** on Quorum blockchain.
+* Provides a high-level interface to **propose/get validators** on an Istanbul blockchain.
+* Provides a high-level interface to **create private contracts** on a Quorum blockchain.
+* Provides a bare bones wrapper to **send simple transactions** on a Stellar blockchain.
 
 Usage
 -----
@@ -19,7 +20,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/getamis/eth-client/eth"
+	"github.com/Blockdaemon/node-client-sdk/eth"
+	// "github.com/Blockdaemon/node-client-sdk/stellar"
 )
 
 func main() {
@@ -28,6 +30,13 @@ func main() {
 	// with local IPC socket filename
 	url := "http://127.0.0.1:8545"
 	client, err := eth.Dial(url)
+
+        // For Stellar, something like:
+        //url := "http://127.0.0.1:8000"
+        //coreurl := "http://127.0.0.1:11626"
+        //passphrase := ""
+        //client, err := stellar.Dial(url, coreurl, passphrase)
+
 	if err != nil {
 		fmt.Println("Failed to dial, url: ", url, ", err: ", err)
 		return
@@ -52,6 +61,8 @@ func main() {
 
 Implemented JSON-RPC methods
 ----------------------------
+
+## Ethereum:
 
 * admin_addPeer
 * admin_adminPeers
@@ -105,6 +116,11 @@ Methods:
 * quorum_privateContract
 * quorum_contract
 
+## Stellar:
+* core.Info
+* horizon.SubmitTransaction
+* horizon.LoadAccount
+
 Contributing
 ------------
 
@@ -124,3 +140,6 @@ Reference
 * https://github.com/ethereum/EIPs/issues/650
 * https://github.com/jpmorganchase/quorum
 * https://github.com/getamis/istanbul-tools
+* https://github.com/stellar/go/clients/stellarcore
+* https://github.com/stellar/go/clients/horizon
+* https://github.com/stellar/go/build
