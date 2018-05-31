@@ -117,6 +117,14 @@ Methods:
 * quorum_contract
 
 ## Stellar:
+
+To use these methods, make sure that
+* Server is running a [Stellar blockchain](https://github.com/stellar/packages)
+* Make sure the horizon service is running as well.
+* Connect to server through `stellar.Dial` function. You will need to supply both the core and horizon endpoints, as well as the network passphrase
+
+Methods:
+
 * core.Info
 * horizon.SubmitTransaction
 * horizon.LoadAccount
