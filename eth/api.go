@@ -73,4 +73,5 @@ type Client interface {
 	EstimateGas(ctx context.Context, msg ethereum.CallMsg) (*big.Int, error)
 	SendTransaction(ctx context.Context, tx *types.Transaction) error
 	BuildAndSendTransaction(ctx context.Context, from, to, amount string, nonce int64, gasLimit, gasPrice string, data []byte) error
+	GetBalance(ctx context.Context, account string) (string, error)
 }

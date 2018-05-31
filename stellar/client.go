@@ -2,6 +2,7 @@ package stellar
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/stellar/go/clients/horizon"
 	"github.com/stellar/go/clients/stellarcore"
@@ -67,4 +68,18 @@ func (c *client) BuildAndSendTransaction(ctx context.Context, from, to, amount s
 	}
 
 	return c.SubmitTransaction(ctx, txeB64)
+}
+
+func (c *client) GetBalance(ctx context.Context, address string) (resp string, err error) {
+	account, err := c.LoadAccount(address)
+	if err != nil {
+		return "", err;
+	}
+
+	balances, err := json.Marshal(account.Balances)
+	if err != nil {
+		return "", err;
+	}
+
+	return string(balances), err;
 }

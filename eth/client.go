@@ -117,6 +117,15 @@ func (c *client) BuildAndSendTransaction(ctx context.Context, from, to, amount s
 	return c.SendTransaction(ctx, signTx)
 }
 
+func (c *client) GetBalance(ctx context.Context, account string) (string, error) {
+	address := common.HexToAddress(account)
+	// at zero means last known balance
+	balance, err := c.BalanceAt(ctx, address, new(big.Int))
+	if err != nil {
+		return "", err
+	}
+	return balance.Text(10), nil
+}
 
 // ----------------------------------------------------------------------------
 // admin
