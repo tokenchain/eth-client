@@ -17,7 +17,7 @@ type Client interface {
 	Info(ctx context.Context) (resp *proto.InfoResponse, err error)
 
 	// horizon
-	SubmitTransaction(ctx context.Context, envelope string) (resp *proto.TXResponse, err error) // simple wrapper to existing SubmitTransaction
+	SubmitTransaction(ctx context.Context, envelope string) (resp *proto.TXResponse, err error)               // simple wrapper to existing SubmitTransaction
 	BuildAndSendTransaction(ctx context.Context, from, to, amount string) (resp *proto.TXResponse, err error) // build, sign, and submit
 	GetBalance(ctx context.Context, address string) (resp string, err error)
 }

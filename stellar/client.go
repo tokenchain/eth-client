@@ -15,8 +15,8 @@ import (
 // client defines typed wrappers for the Steller API.
 type client struct {
 	*horizon.Client
-	core *stellarcore.Client // allow talking directly to core
-	passphrase string	// network passphrase
+	core       *stellarcore.Client // allow talking directly to core
+	passphrase string              // network passphrase
 }
 
 // Dial just associates URLs with the client, it does not actually try to connect (yet)
@@ -25,8 +25,8 @@ func Dial(horizonURL string, coreURL string, passphrase string) (Client, error) 
 	// URL/passphrase problems at Dial time
 	// TODO: set up HTTP?
 	return &client{
-		Client: &horizon.Client{URL: horizonURL},
-		core:   &stellarcore.Client{URL: coreURL},
+		Client:     &horizon.Client{URL: horizonURL},
+		core:       &stellarcore.Client{URL: coreURL},
 		passphrase: passphrase,
 	}, nil
 }
@@ -54,17 +54,17 @@ func (c *client) BuildAndSendTransaction(ctx context.Context, from, to, amount s
 		),
 	)
 	if err != nil {
-		return nil, err;
+		return nil, err
 	}
 
 	txe, err := tx.Sign(from)
 	if err != nil {
-		return nil, err;
+		return nil, err
 	}
 
 	txeB64, err := txe.Base64()
 	if err != nil {
-		return nil, err;
+		return nil, err
 	}
 
 	return c.SubmitTransaction(ctx, txeB64)
@@ -73,13 +73,13 @@ func (c *client) BuildAndSendTransaction(ctx context.Context, from, to, amount s
 func (c *client) GetBalance(ctx context.Context, address string) (resp string, err error) {
 	account, err := c.LoadAccount(address)
 	if err != nil {
-		return "", err;
+		return "", err
 	}
 
 	balances, err := json.Marshal(account.Balances)
 	if err != nil {
-		return "", err;
+		return "", err
 	}
 
-	return string(balances), err;
+	return string(balances), err
 }
