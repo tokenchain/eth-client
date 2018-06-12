@@ -119,8 +119,8 @@ func (c *client) BuildAndSendTransaction(ctx context.Context, from, to, amount s
 
 func (c *client) GetBalance(ctx context.Context, account string) (string, error) {
 	address := common.HexToAddress(account)
-	// at zero means last known balance
-	balance, err := c.BalanceAt(ctx, address, new(big.Int))
+	// at nil means last known balance
+	balance, err := c.BalanceAt(ctx, address, nil)
 	if err != nil {
 		return "", err
 	}
