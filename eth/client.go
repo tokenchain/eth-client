@@ -163,9 +163,9 @@ func (c *client) StopMining(ctx context.Context) error {
 // Generic client.Client functions
 func (c *client) GetInfo(ctx context.Context) (string, error) {
 	type info struct {
-		NodeInfo *p2p.PeerInfo
-		AdminPeers []*p2p.PeerInfo
-		BlockNumber string
+		NodeInfo    *p2p.PeerInfo   `json:"nodeInfo"`
+		AdminPeers  []*p2p.PeerInfo `json:"adminPeers"`
+		BlockNumber string          `json:"blockNumber"`
 	}
 	block, err := c.BlockNumber(ctx)
 	if err != nil {
