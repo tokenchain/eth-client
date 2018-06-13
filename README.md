@@ -54,6 +54,7 @@ func main() {
 		return
 	}
 
+	// Should work for all types of Dial()ed endpoints
 	balance, err := client.GetBalance(context.Background(),
 		"de155b6f2aead0474c7428424dec755170e97f76")
 	if err != nil {
@@ -62,6 +63,7 @@ func main() {
 	}
 	fmt.Println("balance: ", balance)
 
+	// Ethereum specific
 	err = client.SetMiningAccount(context.Background(),
 		"de155b6f2aead0474c7428424dec755170e97f76")
 	if err != nil {
