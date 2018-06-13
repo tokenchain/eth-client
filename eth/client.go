@@ -18,14 +18,16 @@ package eth
 
 import (
 	"context"
+	"crypto/ecdsa"
+	"errors"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/p2p"
-	"github.com/ethereum/go-ethereum/crypto"
 	ethrpc "github.com/ethereum/go-ethereum/rpc"
 )
 
@@ -85,31 +87,50 @@ func (c *client) BlockNumber(ctx context.Context) (*big.Int, error) {
 	return h, err
 }
 
-func (c *client) BuildAndSendTransaction(ctx context.Context, from, to, amount string, nonce int64, gasLimit, gasPrice string, data []byte) error {
-	toAddress := common.HexToAddress(to)
-	privkey, err := crypto.HexToECDSA(from)
+func privateKeyToPubAddress(privKey *ecdsa.PrivateKey) (*common.Address, error) {
+	pubKey := privKey.Public()
+	pubKeyECDSA, ok := pubKey.(*ecdsa.PublicKey)
+	if !ok {
+		return nil, errors.New("error casting public key to ECDSA")
+	}
+	pubAddress := crypto.PubkeyToAddress(*pubKeyECDSA)
+	return &pubAddress, nil
+}
+
+// todo: SendERC-20 also
+// https://ethereum.stackexchange.com/questions/10486/raw-transaction-data-in-go
+func (c *client) SendAmount(ctx context.Context, fromPriv, toPub, amount string) error {
+	fromPrivKey, err := crypto.HexToECDSA(fromPriv)
 	if err != nil {
 		return err
 	}
 
-	amountInt, err := hexutil.DecodeBig(amount)
+	// convert fromPrivKey to fromPubAddress
+	fromPubAddress, err := privateKeyToPubAddress(fromPrivKey)
 	if err != nil {
 		return err
 	}
 
-	gasLimitInt, err := hexutil.DecodeBig(gasLimit)
+	// find pending nonce for from account
+	nonce, err := c.PendingNonceAt(ctx, *fromPubAddress)
 	if err != nil {
 		return err
 	}
 
-	gasPriceInt, err := hexutil.DecodeBig(gasPrice)
+	toAddress := common.HexToAddress(toPub)
+
+	amountInt := new(big.Int)
+	amountInt.SetString(amount, 10)
+
+	gasPrice, err := c.SuggestGasPrice(ctx)
 	if err != nil {
 		return err
 	}
 
-	tx := types.NewTransaction(uint64(nonce), toAddress, amountInt, gasLimitInt, gasPriceInt, data)
+	tx := types.NewTransaction(nonce, toAddress, amountInt,
+		big.NewInt(2000000), gasPrice, nil)
 
-	signTx, err := types.SignTx(tx, types.HomesteadSigner{}, privkey)
+	signTx, err := types.SignTx(tx, types.HomesteadSigner{}, fromPrivKey)
 	if err != nil {
 		return err
 	}

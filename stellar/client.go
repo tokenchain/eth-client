@@ -43,7 +43,7 @@ func (c *client) SubmitTransaction(ctx context.Context, envelope string) (resp *
 	return c.core.SubmitTransaction(ctx, envelope)
 }
 
-func (c *client) BuildAndSendTransaction(ctx context.Context, from, to, amount string) (resp *proto.TXResponse, err error) {
+func (c *client) SendAmount(ctx context.Context, from, to, amount string) (resp *proto.TXResponse, err error) {
 	tx, err := build.Transaction(
 		build.SourceAccount{AddressOrSeed: from},
 		build.Network{Passphrase: c.passphrase},
