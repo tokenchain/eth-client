@@ -161,6 +161,34 @@ func (c *client) StopMining(ctx context.Context) error {
 }
 
 // Generic client.Client functions
+func (c *client) GetInfo(ctx context.Context) (string, error) {
+	type info struct {
+		NodeInfo *p2p.PeerInfo
+		AdminPeers []*p2p.PeerInfo
+		BlockNumber string
+	}
+	block, err := c.BlockNumber(ctx)
+	if err != nil {
+		return "", err
+	}
+	resp := &info{BlockNumber: block.String()}
+
+	ni, err := c.NodeInfo(ctx)
+	if err == nil {
+		resp.NodeInfo = ni
+	}
+
+	ap, err := c.AdminPeers(ctx)
+	if err == nil {
+		resp.AdminPeers = ap
+	}
+
+	out, err := json.Marshal(resp)
+	return string(out), err
+}
+
+// todo: SendERC-20 also
+// https://ethereum.stackexchange.com/questions/10486/raw-transaction-data-in-go
 func privateKeyToPubAddress(privKey *ecdsa.PrivateKey) (*common.Address, error) {
 	pubKey := privKey.Public()
 	pubKeyECDSA, ok := pubKey.(*ecdsa.PublicKey)
@@ -171,21 +199,6 @@ func privateKeyToPubAddress(privKey *ecdsa.PrivateKey) (*common.Address, error) 
 	return &pubAddress, nil
 }
 
-func (c *client) GetInfo(ctx context.Context) (string, error) {
-	type info struct {
-		BlockNumber string
-		// ....
-	}
-	block, err := c.BlockNumber(ctx)
-	if err != nil {
-		return "", err
-	}
-	out, err := json.Marshal(&info{BlockNumber: block.String()})
-	return string(out), err
-}
-
-// todo: SendERC-20 also
-// https://ethereum.stackexchange.com/questions/10486/raw-transaction-data-in-go
 func (c *client) SendAmount(ctx context.Context, fromPriv, toPub, amount string) error {
 	fromPrivKey, err := crypto.HexToECDSA(fromPriv)
 	if err != nil {
@@ -198,22 +211,24 @@ func (c *client) SendAmount(ctx context.Context, fromPriv, toPub, amount string)
 		return err
 	}
 
+	toAddress := common.HexToAddress(toPub)
+
+	amountInt := new(big.Int)
+	amountInt.SetString(amount, 10)
+
+	// find a gas price
+	gasPrice, err := c.SuggestGasPrice(ctx)
+	if err != nil {
+		return err
+	}
+
 	// find pending nonce for from account
 	nonce, err := c.PendingNonceAt(ctx, *fromPubAddress)
 	if err != nil {
 		return err
 	}
 
-	toAddress := common.HexToAddress(toPub)
-
-	amountInt := new(big.Int)
-	amountInt.SetString(amount, 10)
-
-	gasPrice, err := c.SuggestGasPrice(ctx)
-	if err != nil {
-		return err
-	}
-
+	// assume gas limit of 2,000,000
 	tx := types.NewTransaction(nonce, toAddress, amountInt,
 		big.NewInt(2000000), gasPrice, nil)
 
