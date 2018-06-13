@@ -22,16 +22,19 @@
 
 
 [[constraint]]
+  branch = "master"
   name = "github.com/ethereum/go-ethereum"
-  version = "1.8.11"
+#  version = "1.8.11"
 
 [[constraint]]
+  branch = "master"
   name = "github.com/getamis/eth-client"
-  version = "1.0.1"
+#  version = "1.0.1"
 
 [[constraint]]
+  branch = "master"
   name = "github.com/inconshreveable/log15"
-  version = "2.13.0"
+#  version = "2.13.0"
 
 [[constraint]]
   branch = "master"

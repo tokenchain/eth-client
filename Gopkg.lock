@@ -26,10 +26,10 @@
   version = "v1.1.0"
 
 [[projects]]
+  branch = "master"
   name = "github.com/ethereum/go-ethereum"
   packages = [".","common","common/hexutil","common/math","common/mclock","core/types","crypto","crypto/ecies","crypto/secp256k1","crypto/sha3","ethclient","ethdb","event","log","metrics","p2p","p2p/discover","p2p/discv5","p2p/nat","p2p/netutil","params","rlp","rpc","trie"]
-  revision = "dea1ce052a10cd7d401a5c04f83f371a06fe293c"
-  version = "v1.8.11"
+  revision = "ea89f40f0dab7957aa1825b56be80e84d3b04b5c"
 
 [[projects]]
   name = "github.com/getamis/eth-client"
@@ -202,6 +202,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "6b82596f7506a8e6b5e5cec711fbfde73191304abcabfb723e39d43e575b0863"
+  inputs-digest = "58a6a291306048392a850da486d70f614b95e6c975c13c7c3ed37be9de89fb90"
   solver-name = "gps-cdcl"
   solver-version = 1
