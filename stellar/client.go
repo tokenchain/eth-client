@@ -31,19 +31,28 @@ func Dial(horizonURL string, coreURL string, passphrase string) (Client, error) 
 	}, nil
 }
 
+// Generic client.Client functions
 func (c *client) Close() {
 	// TODO: close HTTP if set up in Dial?
 }
 
-func (c *client) Info(ctx context.Context) (resp *proto.InfoResponse, err error) {
-	return c.core.Info(ctx)
+func (c *client) GetInfo(ctx context.Context) (string, error) {
+	info, err := c.core.Info(ctx)
+	if err != nil {
+		return "", err
+	}
+	out, err := json.Marshal(info)
+	if err != nil {
+		return "", err
+	}
+	return string(out), err
 }
 
 func (c *client) SubmitTransaction(ctx context.Context, envelope string) (resp *proto.TXResponse, err error) {
 	return c.core.SubmitTransaction(ctx, envelope)
 }
 
-func (c *client) SendAmount(ctx context.Context, from, to, amount string) (resp *proto.TXResponse, err error) {
+func (c *client) SendAmount(ctx context.Context, from, to, amount string) (err error) {
 	tx, err := build.Transaction(
 		build.SourceAccount{AddressOrSeed: from},
 		build.Network{Passphrase: c.passphrase},
@@ -54,20 +63,24 @@ func (c *client) SendAmount(ctx context.Context, from, to, amount string) (resp 
 		),
 	)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	txe, err := tx.Sign(from)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	txeB64, err := txe.Base64()
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return c.SubmitTransaction(ctx, txeB64)
+	_, err = c.SubmitTransaction(ctx, txeB64)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (c *client) GetBalance(ctx context.Context, address string) (resp string, err error) {

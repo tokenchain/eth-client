@@ -18,8 +18,10 @@ package eth
 
 import (
 	"context"
-	"crypto/ecdsa"
 	"errors"
+
+	"crypto/ecdsa"
+	"encoding/json"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -85,67 +87,6 @@ func (c *client) BlockNumber(ctx context.Context) (*big.Int, error) {
 	}
 	h, err := hexutil.DecodeBig(r)
 	return h, err
-}
-
-func privateKeyToPubAddress(privKey *ecdsa.PrivateKey) (*common.Address, error) {
-	pubKey := privKey.Public()
-	pubKeyECDSA, ok := pubKey.(*ecdsa.PublicKey)
-	if !ok {
-		return nil, errors.New("error casting public key to ECDSA")
-	}
-	pubAddress := crypto.PubkeyToAddress(*pubKeyECDSA)
-	return &pubAddress, nil
-}
-
-// todo: SendERC-20 also
-// https://ethereum.stackexchange.com/questions/10486/raw-transaction-data-in-go
-func (c *client) SendAmount(ctx context.Context, fromPriv, toPub, amount string) error {
-	fromPrivKey, err := crypto.HexToECDSA(fromPriv)
-	if err != nil {
-		return err
-	}
-
-	// convert fromPrivKey to fromPubAddress
-	fromPubAddress, err := privateKeyToPubAddress(fromPrivKey)
-	if err != nil {
-		return err
-	}
-
-	// find pending nonce for from account
-	nonce, err := c.PendingNonceAt(ctx, *fromPubAddress)
-	if err != nil {
-		return err
-	}
-
-	toAddress := common.HexToAddress(toPub)
-
-	amountInt := new(big.Int)
-	amountInt.SetString(amount, 10)
-
-	gasPrice, err := c.SuggestGasPrice(ctx)
-	if err != nil {
-		return err
-	}
-
-	tx := types.NewTransaction(nonce, toAddress, amountInt,
-		big.NewInt(2000000), gasPrice, nil)
-
-	signTx, err := types.SignTx(tx, types.HomesteadSigner{}, fromPrivKey)
-	if err != nil {
-		return err
-	}
-
-	return c.SendTransaction(ctx, signTx)
-}
-
-func (c *client) GetBalance(ctx context.Context, account string) (string, error) {
-	address := common.HexToAddress(account)
-	// at nil means last known balance
-	balance, err := c.BalanceAt(ctx, address, nil)
-	if err != nil {
-		return "", err
-	}
-	return balance.Text(10), nil
 }
 
 // ----------------------------------------------------------------------------
@@ -217,4 +158,79 @@ func (c *client) StopMining(ctx context.Context) error {
 		return err
 	}
 	return err
+}
+
+// Generic client.Client functions
+func privateKeyToPubAddress(privKey *ecdsa.PrivateKey) (*common.Address, error) {
+	pubKey := privKey.Public()
+	pubKeyECDSA, ok := pubKey.(*ecdsa.PublicKey)
+	if !ok {
+		return nil, errors.New("error casting public key to ECDSA")
+	}
+	pubAddress := crypto.PubkeyToAddress(*pubKeyECDSA)
+	return &pubAddress, nil
+}
+
+func (c *client) GetInfo(ctx context.Context) (string, error) {
+	type info struct {
+		BlockNumber string
+		// ....
+	}
+	block, err := c.BlockNumber(ctx)
+	if err != nil {
+		return "", err
+	}
+	out, err := json.Marshal(&info{BlockNumber: block.String()})
+	return string(out), err
+}
+
+// todo: SendERC-20 also
+// https://ethereum.stackexchange.com/questions/10486/raw-transaction-data-in-go
+func (c *client) SendAmount(ctx context.Context, fromPriv, toPub, amount string) error {
+	fromPrivKey, err := crypto.HexToECDSA(fromPriv)
+	if err != nil {
+		return err
+	}
+
+	// convert fromPrivKey to fromPubAddress
+	fromPubAddress, err := privateKeyToPubAddress(fromPrivKey)
+	if err != nil {
+		return err
+	}
+
+	// find pending nonce for from account
+	nonce, err := c.PendingNonceAt(ctx, *fromPubAddress)
+	if err != nil {
+		return err
+	}
+
+	toAddress := common.HexToAddress(toPub)
+
+	amountInt := new(big.Int)
+	amountInt.SetString(amount, 10)
+
+	gasPrice, err := c.SuggestGasPrice(ctx)
+	if err != nil {
+		return err
+	}
+
+	tx := types.NewTransaction(nonce, toAddress, amountInt,
+		big.NewInt(2000000), gasPrice, nil)
+
+	signTx, err := types.SignTx(tx, types.HomesteadSigner{}, fromPrivKey)
+	if err != nil {
+		return err
+	}
+
+	return c.SendTransaction(ctx, signTx)
+}
+
+func (c *client) GetBalance(ctx context.Context, account string) (string, error) {
+	address := common.HexToAddress(account)
+	// at nil means last known balance
+	balance, err := c.BalanceAt(ctx, address, nil)
+	if err != nil {
+		return "", err
+	}
+	return balance.Text(10), nil
 }

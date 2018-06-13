@@ -3,6 +3,8 @@ package stellar
 import (
 	"context"
 
+	generic "github.com/Blockdaemon/node-client-sdk/client"
+
 	proto "github.com/stellar/go/protocols/stellarcore"
 	// for building transactions
 	//"github.com/stellar/go/build"
@@ -11,13 +13,8 @@ import (
 )
 
 type Client interface {
-	Close()
-
-	// stellar-core
-	Info(ctx context.Context) (resp *proto.InfoResponse, err error)
+	generic.Client
 
 	// horizon
-	SubmitTransaction(ctx context.Context, envelope string) (resp *proto.TXResponse, err error)               // simple wrapper to existing SubmitTransaction
-	SendAmount(ctx context.Context, from, to, amount string) (resp *proto.TXResponse, err error) // build, sign, and submit
-	GetBalance(ctx context.Context, address string) (resp string, err error)
+	SubmitTransaction(ctx context.Context, envelope string) (resp *proto.TXResponse, err error) // simple wrapper to existing SubmitTransaction
 }

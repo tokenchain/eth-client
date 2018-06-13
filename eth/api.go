@@ -20,6 +20,8 @@ import (
 	"context"
 	"math/big"
 
+	generic "github.com/Blockdaemon/node-client-sdk/client"
+
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
@@ -27,7 +29,7 @@ import (
 )
 
 type Client interface {
-	Close()
+	generic.Client
 
 	// eth
 	BlockNumber(ctx context.Context) (*big.Int, error)
@@ -72,6 +74,4 @@ type Client interface {
 	SuggestGasPrice(ctx context.Context) (*big.Int, error)
 	EstimateGas(ctx context.Context, msg ethereum.CallMsg) (*big.Int, error)
 	SendTransaction(ctx context.Context, tx *types.Transaction) error
-	SendAmount(ctx context.Context, fromPriv, toPub, amount string) error
-	GetBalance(ctx context.Context, account string) (string, error)
 }
