@@ -32,12 +32,6 @@
   revision = "ea89f40f0dab7957aa1825b56be80e84d3b04b5c"
 
 [[projects]]
-  name = "github.com/getamis/eth-client"
-  packages = ["log"]
-  revision = "e1c84550208d48654ab0f6aa309044cb56fd3aa1"
-  version = "v1.0.1"
-
-[[projects]]
   name = "github.com/go-errors/errors"
   packages = ["."]
   revision = "a6af135bd4e28680facf08a3d206b454abc877a4"
@@ -202,6 +196,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "58a6a291306048392a850da486d70f614b95e6c975c13c7c3ed37be9de89fb90"
+  inputs-digest = "a2818d13748c9e2ae813d7f30df8cef8bb258e3cdd58882b2f08a3851b13bc41"
   solver-name = "gps-cdcl"
   solver-version = 1

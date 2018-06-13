@@ -17,7 +17,7 @@
 package eth
 
 import (
-	logging "github.com/getamis/eth-client/log"
+	logging "github.com/Blockdaemon/node-client-sdk/log"
 )
 
 var log = logging.New()

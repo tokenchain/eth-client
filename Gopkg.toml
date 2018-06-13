@@ -28,11 +28,6 @@
 
 [[constraint]]
   branch = "master"
-  name = "github.com/getamis/eth-client"
-#  version = "1.0.1"
-
-[[constraint]]
-  branch = "master"
   name = "github.com/inconshreveable/log15"
 #  version = "2.13.0"
 

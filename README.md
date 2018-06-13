@@ -1,9 +1,11 @@
 node-client-sdk
 ===============
 
-[![Travis](https://img.shields.io/travis/rust-lang/rust.svg)](https://travis-ci.org/getamis/eth-client)
 [![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
+<!--
+[![Travis](https://img.shields.io/travis/rust-lang/rust.svg)](https://travis-ci.org/getamis/eth-client)
 [![Go Report Card](https://goreportcard.com/badge/github.com/getamis/eth-client)](https://goreportcard.com/report/github.com/getamis/eth-client)
+-->
 
 A Golang client library to communicate with Ethereum and Stellar RPC servers.
 * Implements most of JSON-RPC methods and several client-specific methods.
