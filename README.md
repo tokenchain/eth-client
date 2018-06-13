@@ -10,6 +10,10 @@ A Golang client library to communicate with Ethereum and Stellar RPC servers.
 * Provides a high-level interface to **propose/get validators** on an Istanbul blockchain.
 * Provides a high-level interface to **create private contracts** on a Quorum blockchain.
 * Provides a bare bones wrapper to **send simple transactions** on a Stellar blockchain.
+* Provides a generic client interface for all Dial()ed endpoints:
+  * `GetInfo()`
+  * `SendAmount(from, to, amount)`
+  * `GetBalance(account)`
 
 Usage
 -----
@@ -20,8 +24,14 @@ import (
 	"context"
 	"fmt"
 
+	// Generic interface common to all endpoint types
+	//"github.com/Blockdaemon/node-client-sdk/client"
+
+	// Ethereum specific interface
 	"github.com/Blockdaemon/node-client-sdk/eth"
-	// "github.com/Blockdaemon/node-client-sdk/stellar"
+
+	// Stellar/Horzion specific interface
+	//"github.com/Blockdaemon/node-client-sdk/stellar"
 )
 
 func main() {
@@ -31,23 +41,31 @@ func main() {
 	url := "http://127.0.0.1:8545"
 	client, err := eth.Dial(url)
 
-        // For Stellar, something like:
-        //url := "http://127.0.0.1:8000"
-        //coreurl := "http://127.0.0.1:11626"
-        //passphrase := ""
-        //client, err := stellar.Dial(url, coreurl, passphrase)
+	// For Stellar, something like:
+	//url := "http://127.0.0.1:8000"
+	//coreurl := "http://127.0.0.1:11626"
+	//passphrase := ""
+	//client, err := stellar.Dial(url, coreurl, passphrase)
 
 	if err != nil {
 		fmt.Println("Failed to dial, url: ", url, ", err: ", err)
 		return
 	}
 
-        err = client.SetMiningAccount(context.Background(),
+	balance, err := client.GetBalance(context.Background(),
 		"de155b6f2aead0474c7428424dec755170e97f76")
-        if err != nil {
-                fmt.Println("Failed to set etherbase, err: ", err)
-                return
-        }
+	if err != nil {
+		fmt.Println("Failed to get balance, err: ", err)
+		return
+	}
+	fmt.Println("balance: ", balance)
+
+	err = client.SetMiningAccount(context.Background(),
+		"de155b6f2aead0474c7428424dec755170e97f76")
+	if err != nil {
+		fmt.Println("Failed to set etherbase, err: ", err)
+		return
+	}
 
 	err = client.StartMining(context.Background())
 	if err != nil {
