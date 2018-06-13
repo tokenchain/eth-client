@@ -15,3 +15,6 @@
 
 # vi swap files
 .*.swp
+
+# For now, do not keep vendor under revision control, depend on dep
+vendor
