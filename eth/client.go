@@ -230,7 +230,7 @@ func (c *client) SendAmount(ctx context.Context, fromPriv, toPub, amount string)
 
 	// assume gas limit of 2,000,000
 	tx := types.NewTransaction(nonce, toAddress, amountInt,
-		big.NewInt(2000000), gasPrice, nil)
+		2000000, gasPrice, nil)
 
 	signTx, err := types.SignTx(tx, types.HomesteadSigner{}, fromPrivKey)
 	if err != nil {

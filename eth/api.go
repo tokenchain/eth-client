@@ -72,6 +72,6 @@ type Client interface {
 	CallContract(ctx context.Context, msg ethereum.CallMsg, blockNumber *big.Int) ([]byte, error)
 	PendingCallContract(ctx context.Context, msg ethereum.CallMsg) ([]byte, error)
 	SuggestGasPrice(ctx context.Context) (*big.Int, error)
-	EstimateGas(ctx context.Context, msg ethereum.CallMsg) (*big.Int, error)
+	EstimateGas(ctx context.Context, msg ethereum.CallMsg) (uint64, error)
 	SendTransaction(ctx context.Context, tx *types.Transaction) error
 }
