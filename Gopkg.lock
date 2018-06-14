@@ -29,7 +29,7 @@
   branch = "master"
   name = "github.com/ethereum/go-ethereum"
   packages = [".","common","common/hexutil","common/math","common/mclock","core/types","crypto","crypto/ecies","crypto/secp256k1","crypto/sha3","ethclient","ethdb","event","log","metrics","p2p","p2p/discover","p2p/discv5","p2p/nat","p2p/netutil","params","rlp","rpc","trie"]
-  revision = "ea89f40f0dab7957aa1825b56be80e84d3b04b5c"
+  revision = "c95e4a80d146d48a27828853dae8876ed16a9229"
 
 [[projects]]
   name = "github.com/go-errors/errors"
@@ -131,7 +131,7 @@
   branch = "master"
   name = "github.com/stellar/go"
   packages = ["amount","build","clients/horizon","clients/stellarcore","crc16","hash","keypair","network","price","protocols/stellarcore","strkey","support/errors","support/http/mutil","support/log","support/render/problem","xdr"]
-  revision = "2289b703d6369180b6896e23349a2ce3f053c9f6"
+  revision = "c5626e1efe0850e4bf065dc530091a68dfdefd29"
 
 [[projects]]
   name = "github.com/stretchr/objx"
@@ -155,7 +155,7 @@
   branch = "master"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
-  revision = "8ac0e0d97ce45cd83d1d7243c060cb8461dda5e9"
+  revision = "37a17fe027db43f76fd88b056ddf588563fc8722"
 
 [[projects]]
   branch = "master"
@@ -167,7 +167,7 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix","windows"]
-  revision = "8ee9f3e146b708d082f4bab861e5759d1edf8c00"
+  revision = "8883426083c04a2627e6e59d84d5f6fb63d16c91"
 
 [[projects]]
   name = "golang.org/x/text"
