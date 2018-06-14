@@ -10,6 +10,9 @@ import (
 	proto "github.com/stellar/go/protocols/stellarcore"
 	// for building transactions
 	"github.com/stellar/go/build"
+
+	// for generating keypairs
+	"github.com/stellar/go/keypair"
 )
 
 // client defines typed wrappers for the Steller API.
@@ -46,6 +49,13 @@ func (c *client) GetInfo(ctx context.Context) (string, error) {
 		return "", err
 	}
 	return string(out), err
+}
+
+func (c *client) GenerateKey(ctx context.Context) (address, private string, err error) {
+	pair, _ := keypair.Random()
+	address = pair.Address()
+	private = pair.Seed()
+	return
 }
 
 func (c *client) SubmitTransaction(ctx context.Context, envelope string) (resp *proto.TXResponse, err error) {

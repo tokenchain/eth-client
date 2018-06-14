@@ -21,6 +21,7 @@ import (
 	"errors"
 
 	"crypto/ecdsa"
+	"encoding/hex"
 	"encoding/json"
 	"math/big"
 
@@ -185,6 +186,13 @@ func (c *client) GetInfo(ctx context.Context) (string, error) {
 
 	out, err := json.Marshal(resp)
 	return string(out), err
+}
+
+func (c *client) GenerateKey(ctx context.Context) (address, private string, err error) {
+	key, _ := crypto.GenerateKey()
+	address = crypto.PubkeyToAddress(key.PublicKey).Hex()
+	private = hex.EncodeToString(key.D.Bytes())
+	return
 }
 
 // todo: SendERC-20 also
