@@ -11,7 +11,7 @@
   branch = "master"
   name = "github.com/aristanetworks/goarista"
   packages = ["monotime"]
-  revision = "59944ff78bc1de686b0aba1444dfd380f48f03d4"
+  revision = "06cfa1db77dae2425e143980408e642f7a9d5b09"
 
 [[projects]]
   branch = "master"
@@ -29,7 +29,7 @@
   branch = "master"
   name = "github.com/ethereum/go-ethereum"
   packages = [".","common","common/hexutil","common/math","common/mclock","core/types","crypto","crypto/ecies","crypto/secp256k1","crypto/sha3","ethclient","ethdb","event","log","metrics","p2p","p2p/discover","p2p/discv5","p2p/nat","p2p/netutil","params","rlp","rpc","trie"]
-  revision = "c95e4a80d146d48a27828853dae8876ed16a9229"
+  revision = "eaff89291ce998ba4bf9b9816ca8a15c8b85f440"
 
 [[projects]]
   name = "github.com/go-errors/errors"
@@ -130,8 +130,8 @@
 [[projects]]
   branch = "master"
   name = "github.com/stellar/go"
-  packages = ["amount","build","clients/horizon","clients/stellarcore","crc16","hash","keypair","network","price","protocols/stellarcore","strkey","support/errors","support/http/mutil","support/log","support/render/problem","xdr"]
-  revision = "c5626e1efe0850e4bf065dc530091a68dfdefd29"
+  packages = ["amount","build","clients/horizon","clients/stellarcore","crc16","hash","keypair","network","price","protocols/horizon","protocols/horizon/base","protocols/stellarcore","strkey","support/errors","support/http/mutil","support/log","support/render/hal","support/render/problem","support/url","xdr"]
+  revision = "9305f617ab3896931f81362a8679207d9d97721d"
 
 [[projects]]
   name = "github.com/stretchr/objx"
@@ -149,25 +149,25 @@
   branch = "master"
   name = "github.com/syndtr/goleveldb"
   packages = ["leveldb","leveldb/cache","leveldb/comparer","leveldb/errors","leveldb/filter","leveldb/iterator","leveldb/journal","leveldb/memdb","leveldb/opt","leveldb/storage","leveldb/table","leveldb/util"]
-  revision = "e2150783cd35f5b607daca48afd8c57ec54cc995"
+  revision = "0d5a0ceb10cf9ab89fdd744cc8c50a83134f6697"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
-  revision = "37a17fe027db43f76fd88b056ddf588563fc8722"
+  revision = "a49355c7e3f8fe157a85be2f77e6e269a0f89602"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/net"
   packages = ["html","html/atom","html/charset","websocket"]
-  revision = "db08ff08e8622530d9ed3a0e8ac279f6d4c02196"
+  revision = "afe8f62b1d6bbd81f31868121a50b06d8188e1f9"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix","windows"]
-  revision = "8883426083c04a2627e6e59d84d5f6fb63d16c91"
+  revision = "ad87a3a340fa7f3bed189293fbfa7a9b7e021ae1"
 
 [[projects]]
   name = "golang.org/x/text"
@@ -196,6 +196,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "a2818d13748c9e2ae813d7f30df8cef8bb258e3cdd58882b2f08a3851b13bc41"
+  inputs-digest = "3fe1bc727b0320e10f8592202ff007bd10f6e6a7afbaa3304180cc6db64fc017"
   solver-name = "gps-cdcl"
   solver-version = 1
