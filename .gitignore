@@ -13,5 +13,13 @@
 # Project-local glide cache, RE: https://github.com/Masterminds/glide/issues/736
 .glide/
 
+<<<<<<< HEAD
 \.DS_Store
 .idea
+=======
+# vi swap files
+.*.swp
+
+# For now, do not keep vendor under revision control, depend on dep
+vendor
+>>>>>>> master

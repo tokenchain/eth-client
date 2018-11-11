@@ -14,14 +14,21 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
 
-package client
+package eth
 
 import (
 	"context"
+	"errors"
+
+	"crypto/ecdsa"
+	"encoding/hex"
+	"encoding/json"
 	"math/big"
 
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/p2p"
 	ethrpc "github.com/ethereum/go-ethereum/rpc"
@@ -35,11 +42,11 @@ type client struct {
 
 // Dial connects a client to the given URL.
 func Dial(rawurl string) (Client, error) {
-	c, err := ethrpc.Dial(rawurl)
+	rpc, err := ethrpc.Dial(rawurl)
 	if err != nil {
 		return nil, err
 	}
-	return NewClient(c), nil
+	return NewClient(rpc), nil
 }
 
 // NewClient creates a client that uses the given RPC client.
@@ -53,6 +60,12 @@ func NewClient(rpc *ethrpc.Client) Client {
 // Close closes an existing RPC connection.
 func (c *client) Close() {
 	c.rpc.Close()
+}
+
+// Retrieve list of APIs available on the server
+func (c *client) SupportedModules() (map[string]string, error) {
+	r, err := c.rpc.SupportedModules()
+	return r, err
 }
 
 // ----------------------------------------------------------------------------
@@ -84,7 +97,6 @@ func (c *client) BlockNumber(ctx context.Context) (*big.Int, error) {
 func (c *client) AddPeer(ctx context.Context, nodeURL string) error {
 	var r bool
 	// TODO: Result needs to be verified
-	// The response data type are bytes, but we cannot parse...
 	err := c.rpc.CallContext(ctx, &r, "admin_addPeer", nodeURL)
 	if err != nil {
 		return err
@@ -116,6 +128,18 @@ func (c *client) NodeInfo(ctx context.Context) (*p2p.PeerInfo, error) {
 // ----------------------------------------------------------------------------
 // miner
 
+// SetMiningAccount sets etherbase
+func (c *client) SetMiningAccount(ctx context.Context, account string) error {
+	etherbase := common.HexToAddress(account)
+	var r bool
+	// TODO: Result needs to be verified
+	err := c.rpc.CallContext(ctx, &r, "miner_setEtherbase", etherbase)
+	if err != nil {
+		return err
+	}
+	return err
+}
+
 // StartMining starts mining operation.
 func (c *client) StartMining(ctx context.Context) error {
 	var r []byte
@@ -135,4 +159,101 @@ func (c *client) StopMining(ctx context.Context) error {
 		return err
 	}
 	return err
+}
+
+// Generic client.Client functions
+func (c *client) GetInfo(ctx context.Context) (string, error) {
+	type info struct {
+		NodeInfo    *p2p.PeerInfo   `json:"nodeInfo"`
+		AdminPeers  []*p2p.PeerInfo `json:"adminPeers"`
+		BlockNumber string          `json:"blockNumber"`
+	}
+	block, err := c.BlockNumber(ctx)
+	if err != nil {
+		return "", err
+	}
+	resp := &info{BlockNumber: block.String()}
+
+	ni, err := c.NodeInfo(ctx)
+	if err == nil {
+		resp.NodeInfo = ni
+	}
+
+	ap, err := c.AdminPeers(ctx)
+	if err == nil {
+		resp.AdminPeers = ap
+	}
+
+	out, err := json.Marshal(resp)
+	return string(out), err
+}
+
+func (c *client) GenerateKey(ctx context.Context) (address, private string, err error) {
+	key, _ := crypto.GenerateKey()
+	address = crypto.PubkeyToAddress(key.PublicKey).Hex()
+	private = hex.EncodeToString(key.D.Bytes())
+	return
+}
+
+// todo: SendERC-20 also
+// https://ethereum.stackexchange.com/questions/10486/raw-transaction-data-in-go
+func privateKeyToPubAddress(privKey *ecdsa.PrivateKey) (*common.Address, error) {
+	pubKey := privKey.Public()
+	pubKeyECDSA, ok := pubKey.(*ecdsa.PublicKey)
+	if !ok {
+		return nil, errors.New("error casting public key to ECDSA")
+	}
+	pubAddress := crypto.PubkeyToAddress(*pubKeyECDSA)
+	return &pubAddress, nil
+}
+
+func (c *client) SendAmount(ctx context.Context, fromPriv, toPub, amount string) error {
+	fromPrivKey, err := crypto.HexToECDSA(fromPriv)
+	if err != nil {
+		return err
+	}
+
+	// convert fromPrivKey to fromPubAddress
+	fromPubAddress, err := privateKeyToPubAddress(fromPrivKey)
+	if err != nil {
+		return err
+	}
+
+	toAddress := common.HexToAddress(toPub)
+
+	amountInt := new(big.Int)
+	amountInt.SetString(amount, 10)
+
+	// find a gas price
+	gasPrice, err := c.SuggestGasPrice(ctx)
+	if err != nil {
+		return err
+	}
+
+	// find pending nonce for from account
+	nonce, err := c.PendingNonceAt(ctx, *fromPubAddress)
+	if err != nil {
+		return err
+	}
+
+	// assume gas limit of 21,000
+	tx := types.NewTransaction(nonce, toAddress, amountInt,
+		21000, gasPrice, nil)
+
+	signTx, err := types.SignTx(tx, types.HomesteadSigner{}, fromPrivKey)
+	if err != nil {
+		return err
+	}
+
+	return c.SendTransaction(ctx, signTx)
+}
+
+func (c *client) GetBalance(ctx context.Context, account string) (string, error) {
+	address := common.HexToAddress(account)
+	// at nil means last known balance
+	balance, err := c.BalanceAt(ctx, address, nil)
+	if err != nil {
+		return "", err
+	}
+	return balance.Text(10), nil
 }

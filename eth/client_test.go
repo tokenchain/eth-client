@@ -14,10 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
 
-package client
+package eth
 
-import (
-	logging "github.com/getamis/eth-client/log"
+// Verfiy that client implements the Client interface.
+var (
+	_ = Client(&client{})
 )
-
-var log = logging.New()

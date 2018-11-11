@@ -21,7 +21,8 @@ import (
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/common"
-	ethClient "github.com/getamis/eth-client/client"
+
+	ethClient "github.com/Blockdaemon/node-client-sdk/eth"
 )
 
 type Client interface {

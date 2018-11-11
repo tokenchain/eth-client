@@ -22,11 +22,12 @@ import (
 	"sort"
 	"strings"
 
+	ethClient "github.com/Blockdaemon/node-client-sdk/eth"
+
 	ethereum "github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/rpc"
-	ethClient "github.com/getamis/eth-client/client"
 )
 
 // client defines typed wrappers for the eth-client.

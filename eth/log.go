@@ -14,9 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
 
-package client
+package eth
 
-// Verfiy that client implements the Client interface.
-var (
-	_ = Client(&client{})
+import (
+	logging "github.com/Blockdaemon/node-client-sdk/log"
 )
+
+var log = logging.New()
