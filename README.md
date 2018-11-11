@@ -9,7 +9,13 @@ A Golang client library to communicate with Ethereum RPC server.
 * Implements most of JSON-RPC methods and several client-specific methods.
 * Provides a high-level interface to **propose/get validators** on Istanbul blockchain.
 * Provides a high-level interface to **create private contracts** on Quorum blockchain.
+coding setup
 
+```
+go get -u github.com/ethereum/go-ethereum
+go get -u github.com/getamis/eth-client/
+
+```
 Usage
 -----
 ```golang
@@ -87,7 +93,7 @@ Methods:
 To use these methods, make sure that
 * Server is running on [Quorum blockchain](https://github.com/jpmorganchase/quorum/wiki)
 * Connect to server through `quorum.Dial` function (not the original [Geth client](https://github.com/ethereum/go-ethereum/tree/master/ethclient)).
-  
+
 Methods:
 
 * quorum_privateContract
