@@ -3,7 +3,7 @@ package stellar
 import (
 	"context"
 
-	generic "github.com/Blockdaemon/node-client-sdk/client"
+	generic "github.com/tokenchain/eth-client/eth"
 
 	proto "github.com/stellar/go/protocols/stellarcore"
 	// for building transactions

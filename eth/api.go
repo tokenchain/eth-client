@@ -20,7 +20,7 @@ import (
 	"context"
 	"math/big"
 
-	generic "github.com/Blockdaemon/node-client-sdk/client"
+	generic "github.com/tokenchain/eth-client/etht"
 
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
