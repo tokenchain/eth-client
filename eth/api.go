@@ -20,8 +20,6 @@ import (
 	"context"
 	"math/big"
 
-	generic "github.com/tokenchain/eth-client/etht"
-
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
@@ -29,7 +27,7 @@ import (
 )
 
 type Client interface {
-	generic.Client
+//	generic.Client
 
 	// eth
 	BlockNumber(ctx context.Context) (*big.Int, error)
