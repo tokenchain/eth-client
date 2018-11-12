@@ -17,7 +17,7 @@
 package eth
 
 import (
-	logging "github.com/Blockdaemon/node-client-sdk/log"
+	logging "github.com/tokenchain/eth-client/log"
 )
 
 var log = logging.New()
