@@ -22,7 +22,7 @@ import (
 
 	"github.com/ethereum/go-ethereum/common"
 
-	ethClient "github.com/Blockdaemon/node-client-sdk/eth"
+	ethClient "github.com/tokenchain/eth-client/eth"
 )
 
 type Client interface {

@@ -22,7 +22,7 @@ import (
 	"sort"
 	"strings"
 
-	ethClient "github.com/Blockdaemon/node-client-sdk/eth"
+	ethClient "github.com/tokenchain/eth-client/eth"
 
 	ethereum "github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
