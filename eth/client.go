@@ -41,7 +41,7 @@ type ClientTokenEth struct {
 }
 
 // Dial connects a client to the given URL.
-func Dial(rawurl string) (Client, error) {
+func Dial(rawurl string) (*ClientTokenEth, error) {
 	rpc, err := ethrpc.Dial(rawurl)
 	if err != nil {
 		return nil, err
