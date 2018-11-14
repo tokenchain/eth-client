@@ -90,6 +90,13 @@ func (c *ClientTokenEth) BlockNumber(ctx context.Context) (*big.Int, error) {
 	return h, err
 }
 
+func toBlockNumArg(number *big.Int) string {
+	if number == nil {
+		return "latest"
+	}
+	return hexutil.EncodeBig(number)
+}
+
 // ----------------------------------------------------------------------------
 // admin
 
@@ -256,4 +263,16 @@ func (c *ClientTokenEth) GetBalance(ctx context.Context, account string) (string
 		return "", err
 	}
 	return balance.Text(10), nil
+}
+
+func (c *ClientTokenEth) LatestConfirmedTransactionCount(ctx context.Context) (uint, error) {
+	var num hexutil.Uint
+	err := c.rpc.CallContext(ctx, &num, "eth_getBlockTransactionCountByNumber", "latest")
+	return uint(num), err
+}
+
+func (c *ClientTokenEth) TransactionCountByBlockNumber(ctx context.Context, number *big.Int) (uint, error) {
+	var num hexutil.Uint
+	err := c.rpc.CallContext(ctx, &num, "eth_getBlockTransactionCountByNumber", toBlockNumArg(number))
+	return uint(num), err
 }

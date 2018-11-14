@@ -27,7 +27,7 @@ import (
 )
 
 type Client interface {
-//	generic.Client
+	//	generic.Client
 
 	// eth
 	BlockNumber(ctx context.Context) (*big.Int, error)
@@ -53,6 +53,8 @@ type Client interface {
 	TransactionCount(ctx context.Context, blockHash common.Hash) (uint, error)
 	TransactionInBlock(ctx context.Context, blockHash common.Hash, index uint) (*types.Transaction, error)
 	TransactionReceipt(ctx context.Context, txHash common.Hash) (*types.Receipt, error)
+	LatestConfirmedTransactionCount(ctx context.Context) (uint, error)
+	TransactionCountByBlockNumber(ctx context.Context, number *big.Int) (uint, error)
 	SyncProgress(ctx context.Context) (*ethereum.SyncProgress, error)
 	SubscribeNewHead(ctx context.Context, ch chan<- *types.Header) (ethereum.Subscription, error)
 	NetworkID(ctx context.Context) (*big.Int, error)

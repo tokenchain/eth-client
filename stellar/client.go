@@ -16,18 +16,18 @@ import (
 )
 
 // client defines typed wrappers for the Steller API.
-type client struct {
+type StellarClient struct {
 	*horizon.Client
 	core       *stellarcore.Client // allow talking directly to core
 	passphrase string              // network passphrase
 }
 
 // Dial just associates URLs with the client, it does not actually try to connect (yet)
-func Dial(horizonURL string, coreURL string, passphrase string) (Client, error) {
+func Dial(horizonURL string, coreURL string, passphrase string) (*StellarClient, error) {
 	// TODO: try to do basic connction to both URLs to detect
 	// URL/passphrase problems at Dial time
 	// TODO: set up HTTP?
-	return &client{
+	return &StellarClient{
 		Client:     &horizon.Client{URL: horizonURL},
 		core:       &stellarcore.Client{URL: coreURL},
 		passphrase: passphrase,
@@ -35,11 +35,11 @@ func Dial(horizonURL string, coreURL string, passphrase string) (Client, error) 
 }
 
 // Generic client.Client functions
-func (c *client) Close() {
+func (c *StellarClient) Close() {
 	// TODO: close HTTP if set up in Dial?
 }
 
-func (c *client) GetInfo(ctx context.Context) (string, error) {
+func (c *StellarClient) GetInfo(ctx context.Context) (string, error) {
 	info, err := c.core.Info(ctx)
 	if err != nil {
 		return "", err
@@ -51,18 +51,18 @@ func (c *client) GetInfo(ctx context.Context) (string, error) {
 	return string(out), err
 }
 
-func (c *client) GenerateKey(ctx context.Context) (address, private string, err error) {
+func (c *StellarClient) GenerateKey(ctx context.Context) (address, private string, err error) {
 	pair, _ := keypair.Random()
 	address = pair.Address()
 	private = pair.Seed()
 	return
 }
 
-func (c *client) SubmitTransaction(ctx context.Context, envelope string) (resp *proto.TXResponse, err error) {
+func (c *StellarClient) SubmitTransaction(ctx context.Context, envelope string) (resp *proto.TXResponse, err error) {
 	return c.core.SubmitTransaction(ctx, envelope)
 }
 
-func (c *client) SendAmount(ctx context.Context, from, to, amount string) (err error) {
+func (c *StellarClient) SendAmount(ctx context.Context, from, to, amount string) (err error) {
 	tx, err := build.Transaction(
 		build.SourceAccount{AddressOrSeed: from},
 		build.Network{Passphrase: c.passphrase},
@@ -93,7 +93,7 @@ func (c *client) SendAmount(ctx context.Context, from, to, amount string) (err e
 	return nil
 }
 
-func (c *client) GetBalance(ctx context.Context, address string) (resp string, err error) {
+func (c *StellarClient) GetBalance(ctx context.Context, address string) (resp string, err error) {
 	account, err := c.LoadAccount(address)
 	if err != nil {
 		return "", err
