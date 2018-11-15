@@ -33,7 +33,7 @@ import (
 	"github.com/ethereum/go-ethereum/p2p"
 	ethrpc "github.com/ethereum/go-ethereum/rpc"
 	"github.com/ethereum/go-ethereum"
-	"./rpc"
+	"github.com/tokenchain/eth-client/eth/rpc"
 )
 
 // client defines typed wrappers for the Ethereum RPC API.
