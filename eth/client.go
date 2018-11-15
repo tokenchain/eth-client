@@ -33,7 +33,6 @@ import (
 	"github.com/ethereum/go-ethereum/p2p"
 	ethrpc "github.com/ethereum/go-ethereum/rpc"
 	"github.com/ethereum/go-ethereum"
-	"fmt"
 )
 
 // client defines typed wrappers for the Ethereum RPC API.
@@ -43,8 +42,29 @@ type ClientTokenEth struct {
 }
 
 type RpcEthTransaction struct {
-	tx *types.Transaction
+	tx *Transaction
 	txExtraInfo
+}
+
+type Transaction struct {
+	Data Txdata
+}
+
+type Txdata struct {
+	AccountNonce uint64          `json:"nonce"    gencodec:"required"`
+	Price        *big.Int        `json:"gasPrice" gencodec:"required"`
+	GasLimit     uint64          `json:"gas"      gencodec:"required"`
+	Recipient    *common.Address `json:"to"       rlp:"nil"` // nil means contract creation
+	Amount       *big.Int        `json:"value"    gencodec:"required"`
+	Payload      []byte          `json:"input"    gencodec:"required"`
+
+	// Signature values
+	V *big.Int `json:"v" gencodec:"required"`
+	R *big.Int `json:"r" gencodec:"required"`
+	S *big.Int `json:"s" gencodec:"required"`
+
+	// This is only used when marshaling to JSON.
+	Hash *common.Hash `json:"hash" rlp:"-"`
 }
 
 type txExtraInfo struct {
@@ -296,12 +316,10 @@ func (c *ClientTokenEth) TransactionByBlockNumberIndex(ctx context.Context, numb
 	if err == nil {
 		if json == nil {
 			return nil, ethereum.NotFound
-		} else if _, r, _ := json.tx.RawSignatureValues(); r == nil {
-			return nil, fmt.Errorf("server returned transaction without signature")
 		}
 	}
 	//if json.From != nil && json.BlockHash != nil {
-		//setSenderFromServer(json.tx, *json.From, *json.BlockHash)
+	//setSenderFromServer(json.tx, *json.From, *json.BlockHash)
 	//}
 	return json, err
 }
