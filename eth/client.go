@@ -39,6 +39,7 @@ import (
 type ClientTokenEth struct {
 	*ethclient.Client
 	rpc *ethrpc.Client
+	//admin rpcapi.Admin
 }
 
 type RpcEthTransaction struct {
@@ -308,7 +309,7 @@ func (c *ClientTokenEth) TransactionCountByBlockNumber(ctx context.Context, numb
 
 func (c *ClientTokenEth) TransactionByBlockNumberIndex(ctx context.Context, number *big.Int, index *big.Int) (*RpcEthTransaction, error) {
 	var json *RpcEthTransaction
-	err := c.rpc.CallContext(ctx, &json, "eth_getTransactionByBlockNumberAndIndex", toBlockNumArg(number))
+	err := c.rpc.CallContext(ctx, &json, "eth_getTransactionByBlockNumberAndIndex", toBlockNumArg(number), toBlockNumArg(index))
 	if err == nil {
 		if json == nil {
 			return nil, ethereum.NotFound
