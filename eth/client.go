@@ -42,12 +42,8 @@ type ClientTokenEth struct {
 }
 
 type RpcEthTransaction struct {
-	tx *Transaction
-	txExtraInfo
-}
-
-type Transaction struct {
 	Data Txdata
+	txExtraInfo
 }
 
 type Txdata struct {
