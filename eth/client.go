@@ -32,12 +32,25 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/p2p"
 	ethrpc "github.com/ethereum/go-ethereum/rpc"
+	"github.com/ethereum/go-ethereum"
+	"fmt"
 )
 
 // client defines typed wrappers for the Ethereum RPC API.
 type ClientTokenEth struct {
 	*ethclient.Client
 	rpc *ethrpc.Client
+}
+
+type RpcEthTransaction struct {
+	tx *types.Transaction
+	txExtraInfo
+}
+
+type txExtraInfo struct {
+	BlockNumber *string         `json:"blockNumber,omitempty"`
+	BlockHash   *common.Hash    `json:"blockHash,omitempty"`
+	From        *common.Address `json:"from,omitempty"`
 }
 
 // Dial connects a client to the given URL.
@@ -275,4 +288,20 @@ func (c *ClientTokenEth) TransactionCountByBlockNumber(ctx context.Context, numb
 	var num hexutil.Uint
 	err := c.rpc.CallContext(ctx, &num, "eth_getBlockTransactionCountByNumber", toBlockNumArg(number))
 	return uint(num), err
+}
+
+func (c *ClientTokenEth) TransactionByBlockNumberIndex(ctx context.Context, number *big.Int, index *big.Int) (*RpcEthTransaction, error) {
+	var json *RpcEthTransaction
+	err := c.rpc.CallContext(ctx, &json, "eth_getTransactionByBlockNumberAndIndex", toBlockNumArg(number))
+	if err == nil {
+		if json == nil {
+			return nil, ethereum.NotFound
+		} else if _, r, _ := json.tx.RawSignatureValues(); r == nil {
+			return nil, fmt.Errorf("server returned transaction without signature")
+		}
+	}
+	//if json.From != nil && json.BlockHash != nil {
+		//setSenderFromServer(json.tx, *json.From, *json.BlockHash)
+	//}
+	return json, err
 }

@@ -55,6 +55,7 @@ type Client interface {
 	TransactionReceipt(ctx context.Context, txHash common.Hash) (*types.Receipt, error)
 	LatestConfirmedTransactionCount(ctx context.Context) (uint, error)
 	TransactionCountByBlockNumber(ctx context.Context, number *big.Int) (uint, error)
+	TransactionByBlockNumberIndex(ctx context.Context, number *big.Int, index *big.Int) (*RpcEthTransaction, error)
 	SyncProgress(ctx context.Context) (*ethereum.SyncProgress, error)
 	SubscribeNewHead(ctx context.Context, ch chan<- *types.Header) (ethereum.Subscription, error)
 	NetworkID(ctx context.Context) (*big.Int, error)
