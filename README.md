@@ -9,11 +9,6 @@ node-client-sdk
 
 A Golang client library to communicate with Ethereum and Stellar RPC servers.
 * Implements most of JSON-RPC methods and several client-specific methods.
-<<<<<<< HEAD
-* Provides a high-level interface to **propose/get validators** on Istanbul blockchain.
-* Provides a high-level interface to **create private contracts** on Quorum blockchain.
-coding setup
-=======
 * Provides a high-level interface to **propose/get validators** on an Istanbul blockchain.
 * Provides a high-level interface to **create private contracts** on a Quorum blockchain.
 * Provides a bare bones wrapper to **send simple transactions** on a Stellar blockchain.
