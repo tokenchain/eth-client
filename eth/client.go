@@ -33,13 +33,14 @@ import (
 	"github.com/ethereum/go-ethereum/p2p"
 	ethrpc "github.com/ethereum/go-ethereum/rpc"
 	"github.com/ethereum/go-ethereum"
+	"./rpc"
 )
 
 // client defines typed wrappers for the Ethereum RPC API.
 type ClientTokenEth struct {
 	*ethclient.Client
-	rpc *ethrpc.Client
-	//admin rpcapi.Admin
+	rpc   *ethrpc.Client
+	admin rpc.Admin
 }
 
 type RpcEthTransaction struct {
