@@ -42,12 +42,12 @@ func (r *RpcEthTransaction) ToAddress() common.Address {
 	return r.Recipient
 }
 
-func (r *RpcEthTransaction) GetETHAmount() *big.Int {
+func (r *RpcEthTransaction) GetETHAmount() *big.Float {
 	a, err := hexutil.DecodeBig(r.Amount)
 	if err != nil {
 		log.Info("error to decode int - ETH value")
 	}
-	return a
+	return bigIntFloat(a, 18)
 }
 
 func (r *RpcEthTransaction) GetETHPrice() *big.Int {
@@ -60,6 +60,14 @@ func (r *RpcEthTransaction) GetETHPrice() *big.Int {
 
 func (r *RpcEthTransaction) GetETHGasLimit() *big.Int {
 	a, err := hexutil.DecodeBig(r.GasLimit)
+	if err != nil {
+		log.Info("error to decode int - ETH Gas Limit")
+	}
+	return a
+}
+
+func (r *RpcEthTransaction) GetNounce() *big.Int {
+	a, err := hexutil.DecodeBig(r.AccountNonce)
 	if err != nil {
 		log.Info("error to decode int - ETH Gas Limit")
 	}
