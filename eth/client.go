@@ -34,6 +34,7 @@ import (
 	ethrpc "github.com/ethereum/go-ethereum/rpc"
 	"github.com/ethereum/go-ethereum"
 	"github.com/tokenchain/eth-client/eth/rpc"
+	"fmt"
 )
 
 // client defines typed wrappers for the Ethereum RPC API.
@@ -63,6 +64,17 @@ type Txdata struct {
 
 	// This is only used when marshaling to JSON.
 	Hash common.Hash `json:"hash" rlp:"-"`
+}
+
+type TokenBalanceJson struct {
+	Contract string `json:"token"`
+	Wallet   string `json:"wallet"`
+	Name     string `json:"name,omitempty"`
+	Symbol   string `json:"symbol,omitempty"`
+	Balance  string `json:"balance"`
+	ETH      string `json:"eth_balance"`
+	Decimals int64  `json:"decimals"`
+	Block    int64  `json:"block"`
 }
 
 type txExtraInfo struct {
@@ -320,4 +332,68 @@ func (c *ClientTokenEth) TransactionByBlockNumberIndex(ctx context.Context, numb
 	//setSenderFromServer(json.tx, *json.From, *json.BlockHash)
 	//}
 	return json, err
+}
+func (c *ClientTokenEth) GetTokenBalanceLatest(ctx context.Context, token_contract common.Address, account_wallet common.Address) (*TokenBalance, error) {
+	return c.GetTokenBalance(ctx, token_contract, account_wallet, nil)
+}
+func (c *ClientTokenEth) GetTokenBalance(ctx context.Context, token_contract common.Address, account_wallet common.Address, blockNumber *big.Int) (*TokenBalance, error) {
+	var err error
+	//var tb TokenBalance
+	tb := &TokenBalance{
+		Wallet:         account_wallet,
+		Contract:       token_contract,
+		InternalUserId: -1,
+		Decimals:       -1,
+	}
+	token, err := newTokenCaller(token_contract, c)
+	if err != nil {
+		spl := fmt.Sprintf("Failed to instantiate a token contract: %v\n", err)
+		fmt.Println(spl)
+		return tb, err
+	}
+
+	block, err := c.BlockByNumber(ctx, blockNumber)
+	if err != nil {
+		spl := fmt.Sprintf("Failed to get current block number: %v\n", err)
+		fmt.Println(spl)
+		return tb, err
+	}
+	tb.Block = block.Number().Int64()
+
+	decimals, err := token.Decimals(nil)
+	if err != nil {
+		spl := fmt.Sprintf("Failed to get decimals from contract: %v \n", tb.Contract.String())
+		fmt.Println(spl)
+		return tb, err
+	}
+	tb.Decimals = decimals.Int64()
+
+	tb.ETH, err = c.BalanceAt(ctx, account_wallet, nil)
+	if err != nil {
+		spl := fmt.Sprintf("Failed to get ethereum balance from address: %v \n", tb.Wallet.String())
+		fmt.Println(spl)
+	}
+
+	tb.Balance, err = token.BalanceOf(nil, account_wallet)
+	if err != nil {
+		spl := fmt.Sprintf("Failed to get balance from contract: %v %v\n", tb.Contract.String(), err)
+		fmt.Println(spl)
+		tb.Balance = big.NewInt(0)
+	}
+
+	tb.Symbol, err = token.Symbol(nil)
+	if err != nil {
+		spl := fmt.Sprintf("Failed to get symbol from contract: %v \n", tb.Contract.String())
+		fmt.Println(spl)
+		tb.Symbol = symbolFix(tb.Contract.String())
+	}
+
+	tb.Name, err = token.Name(nil)
+	if err != nil {
+		spl := fmt.Sprintf("Failed to retrieve token name from contract: %v | %v\n", tb.Contract.String(), err)
+		fmt.Println(spl)
+		tb.Name = "MISSING"
+	}
+
+	return tb, nil
 }
