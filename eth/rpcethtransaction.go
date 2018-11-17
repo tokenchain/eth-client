@@ -66,6 +66,14 @@ func (r *RpcEthTransaction) GetETHGasLimit() *big.Int {
 	return a
 }
 
+func (r *RpcEthTransaction) GetBlockNumber() *big.Int {
+	a, err := hexutil.DecodeBig(r.BlockNumber)
+	if err != nil {
+		log.Info("error to decode int - ETH Gas Limit")
+	}
+	return a
+}
+
 func (r *RpcEthTransaction) GetNounce() *big.Int {
 	a, err := hexutil.DecodeBig(r.AccountNonce)
 	if err != nil {
