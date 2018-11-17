@@ -7,30 +7,33 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 )
 
-
-
-var (
-	token_list map[string]string
-)
-
-func init_token_types() {
-	token_list = map[string]string{
-		"EOS": "0x86Fa049857E0209aa7D9e616F7eb3b3B78ECfdb0",
+func GetSymbolFromId(contract_address common.Address) string {
+	for symbol, address := range token_list {
+		//	fmt.Println("Key:", key, "=>", "Element:", element)
+		if contract_address.String() == address {
+			return symbol
+		}
 	}
+	return "MISSING"
 }
-
+func GetContractFromSymbol(sym string) common.Address {
+	for symbol, address := range token_list {
+		//	fmt.Println("Key:", key, "=>", "Element:", element)
+		if symbol == sym {
+			return common.HexToAddress(address)
+		}
+	}
+	return common.HexToAddress("")
+}
 func symbolFix(contract string) string {
-
 	for symbol, address := range token_list {
 		//	fmt.Println("Key:", key, "=>", "Element:", element)
 		if common.HexToAddress(contract).String() == address {
 			return symbol
 		}
 	}
-
 	return "MISSING"
 }
-
 
 func bigIntString(balance *big.Int, decimals int64) string {
 	amount := bigIntFloat(balance, decimals)
@@ -55,7 +58,6 @@ func bigPow(a, b int64) *big.Int {
 	r := big.NewInt(a)
 	return r.Exp(r, big.NewInt(b), nil)
 }
-
 
 func clean(newNum string) string {
 	stringBytes := bytes.TrimRight([]byte(newNum), "0")

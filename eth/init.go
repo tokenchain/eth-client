@@ -1,0 +1,30 @@
+package eth
+
+var (
+	token_list map[string]string
+)
+
+func init() {
+	token_list = map[string]string{
+		"EOS":  "0x86Fa049857E0209aa7D9e616F7eb3b3B78ECfdb0",
+		"BNB":  "0xB8c77482e45F1F44dE1745F52C74426C631bDD52",
+		"VEN":  "0xd850942ef8811f2a866692a623011bde52a462c1",
+		"MKR":  "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2",
+		"OMG":  "0xd26114cd6EE289AccF82350c8d8487fedB8A0C07",
+		"ZRX":  "0xe41d2489571d322189246dafa5ebde1f4699f498",
+		"TUSD": "0x8dd5fbce2f6a956c3022ba3663759011dd51e73e",
+		"BTM":  "0xcb97e65f07da24d46bcdd078ebebd7c6e6e3d750",
+		"AOA":  "0x9ab165d795019b6d8b3e971dda91071421305e5a",
+		"USDC": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+		"PAX":  "0x8e870d67f660d95d5be530380d0ec0bd388289e1",
+		"MANA": "0x0f5d2fb29fb7d3cfee444a200298f468908cc942",
+		"BNT":  "0x1f573d6fb3f13d689ff844b4ce37794d79a7ff1c",
+		"NAS":  "0x5d65D971895Edc438f465c17DB6992698a52318D",
+		"THPC": "0x38a19ba829f192a30ec7e03cda1368c50dad9785",
+		"BBR":  "0x4e180b8668987b2f13e591ee559b93dad382b4c7",
+		"NULS": "0xb91318f35bdb262e9423bc7c7c2a3a93dd93c92c",
+		"CK":   "0x06012c8cf97bead5deae237070f9587f8e7a266d",
+		"OPT":  "0x4355fC160f74328f9b383dF2EC589bB3dFd82Ba0",
+		"FUN":  "0x419d0d8bdd9af5e606ae2232ed285aff190e711b",
+	}
+}
