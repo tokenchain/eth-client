@@ -44,27 +44,6 @@ type ClientTokenEth struct {
 	admin rpc.Admin
 }
 
-type RpcEthTransaction struct {
-	Txdata
-	txExtraInfo
-}
-
-type Txdata struct {
-	AccountNonce string         `json:"nonce"    gencodec:"required"`
-	Price        string         `json:"gasPrice"   gencodec:"required"`
-	GasLimit     string         `json:"gas"      gencodec:"required"`
-	Recipient    common.Address `json:"to"       rlp:"nil"` // nil means contract creation
-	Amount       string         `json:"value"    gencodec:"required"`
-	Payload      []byte         `json:"input"    gencodec:"required"`
-
-	// Signature values
-	V string `json:"v" gencodec:"required"`
-	R string `json:"r" gencodec:"required"`
-	S string `json:"s" gencodec:"required"`
-
-	// This is only used when marshaling to JSON.
-	Hash common.Hash `json:"hash" rlp:"-"`
-}
 
 type TokenBalanceJson struct {
 	Contract string `json:"token"`
@@ -77,11 +56,6 @@ type TokenBalanceJson struct {
 	Block    int64  `json:"block"`
 }
 
-type txExtraInfo struct {
-	BlockNumber string         `json:"blockNumber,omitempty"`
-	BlockHash   common.Hash    `json:"blockHash,omitempty"`
-	From        common.Address `json:"from,omitempty"`
-}
 
 // Dial connects a client to the given URL.
 func Dial(rawurl string) (*ClientTokenEth, error) {
