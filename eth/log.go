@@ -17,7 +17,7 @@
 package eth
 
 import (
-	logging "../log"
+	logging "github.com/tokenchain/eth-client/log"
 )
 
 var log = logging.New()
