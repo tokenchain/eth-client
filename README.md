@@ -1,11 +1,10 @@
-node-client-sdk
+Node Wrapper Client SDK
 ===============
 
 [![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
-<!--
 [![Travis](https://img.shields.io/travis/rust-lang/rust.svg)](https://travis-ci.org/getamis/eth-client)
 [![Go Report Card](https://goreportcard.com/badge/github.com/getamis/eth-client)](https://goreportcard.com/report/github.com/getamis/eth-client)
--->
+
 
 A Golang client library to communicate with Ethereum and Stellar RPC servers.
 * Implements most of JSON-RPC methods and several client-specific methods.
@@ -13,18 +12,23 @@ A Golang client library to communicate with Ethereum and Stellar RPC servers.
 * Provides a high-level interface to **create private contracts** on a Quorum blockchain.
 * Provides a bare bones wrapper to **send simple transactions** on a Stellar blockchain.
 * Provides a generic client interface for all Dial()ed endpoints:
-  * `GetInfo()`
-  * `SendAmount(from, to, amount)`
-  * `GetBalance(account)`
->>>>>>> master
+* `GetInfo()`
+* `SendAmount(from, to, amount)`
+* `GetBalance(account)`
+
 
 ```
+
 go get -u github.com/ethereum/go-ethereum
 go get -u github.com/getamis/eth-client/
+go get -u github.com/stellar/go
+go get -u github.com/inconshreveable/log15
 
 ```
+
 Usage
 -----
+
 ```golang
 package main
 
