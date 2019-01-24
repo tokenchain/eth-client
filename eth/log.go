@@ -16,29 +16,9 @@
 
 package eth
 
-
 import (
-	"os"
-	"github.com/inconshreveable/log15"
+	logging "../log"
 )
 
-var defaultLogger = log15.New()
-
-func init() {
-	defaultLogger.SetHandler(
-		log15.MultiHandler(
-			log15.CallerFileHandler(log15.StreamHandler(
-				os.Stdout, log15.TerminalFormat(),
-			)),
-		),
-	)
-}
-
-// New returns a new logger with the given context.
-func New(ctx ...interface{}) log15.Logger {
-	return defaultLogger.New(ctx...)
-}
-
-
-var log = New()
+var log = logging.New()
 
